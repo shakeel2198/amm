@@ -48,12 +48,15 @@
         name="email"
         placeholder="Enter your email address"
         aria-label="Email address"
+        aria-describedby="email-error"
         required
       />
       <button type="submit">Notify Me</button>
     </form>
+    <p id="email-error" class="form-error" role="alert" aria-live="polite"></p>
 
     <!-- Social links -->
+    <!-- TODO: Replace '#' hrefs with actual AMM social media profile URLs before launch -->
     <nav class="social" aria-label="Social media links">
       <a href="#" aria-label="Facebook" title="Facebook">
         <!-- Facebook SVG icon -->
@@ -93,10 +96,37 @@
     function handleNotify(e) {
       e.preventDefault();
       var input = document.getElementById('email');
-      if (!input.value || !input.validity.valid) {
+      var errorEl = document.getElementById('email-error');
+
+      // Clear previous error
+      errorEl.textContent = '';
+      input.removeAttribute('aria-invalid');
+
+      if (!input.value.trim()) {
+        errorEl.textContent = 'Please enter your email address.';
+        input.setAttribute('aria-invalid', 'true');
         input.focus();
         return;
       }
+      if (!input.validity.valid) {
+        errorEl.textContent = 'Please enter a valid email address (e.g. name@example.com).';
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+        return;
+      }
+
+      // Persist email in localStorage so it is not silently lost.
+      // TODO: Replace with a real backend / newsletter-service integration before launch.
+      try {
+        var stored = JSON.parse(localStorage.getItem('amm_notify_emails') || '[]');
+        if (stored.indexOf(input.value.trim()) === -1) {
+          stored.push(input.value.trim());
+          localStorage.setItem('amm_notify_emails', JSON.stringify(stored));
+        }
+      } catch (err) {
+        // localStorage unavailable — continue gracefully
+      }
+
       var btn = e.target.querySelector('button');
       btn.textContent = 'Thank You!';
       btn.disabled = true;

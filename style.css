@@ -215,6 +215,15 @@ h1 span {
   letter-spacing: 0.5px;
 }
 
+/* ===== Form validation error ===== */
+.form-error {
+  font-size: 0.82rem;
+  color: #ff8a8a;
+  margin-top: -28px;
+  margin-bottom: 16px;
+  min-height: 1.2em;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
   .card {
